@@ -14,7 +14,7 @@ namespace Tetris
         public static int[] generateLocation = { 0 , 4 };
         public static string square = "■";
         public static Stopwatch timeStart = new Stopwatch();
-        public static int timeToEnd = 300;
+        public static int timeToEnd = 100;
         public static int[,] map = new int[N, M];
         public static ConsoleKeyInfo key;
         public static bool keyPressed = false;
@@ -58,11 +58,12 @@ namespace Tetris
                         Thread.Sleep(timeToEnd);
                         block.Drop();
                         action = true;
-                        block.UpdateBlock();
                         timeStart.Reset();
+                        //
                     }
                     else
                     {
+                        ClearLine();
                         block = GenerateBlock();
                     }
                 }
@@ -105,7 +106,7 @@ namespace Tetris
         public static Block GenerateBlock()
         {
             Random rand = new Random();
-            Block block = new Block(rand.Next());
+            Block block = new Block("0");
             return block;
         }
         public static void ClickEvent(Block block)
@@ -140,14 +141,33 @@ namespace Tetris
             {
                 block.MoveFastDown();
             }
-            if (key.Key == ConsoleKey.UpArrow && keyPressed)
+            if (key.Key == ConsoleKey.UpArrow && keyPressed && !block.IsSomethingUnder())
             {
                 block.RotateRight();
             }
-            if (key.Key == ConsoleKey.D && keyPressed)
+        }
+        public static void ClearLine()
+        {
+            int counter;
+            for (int i = 0; i < map.GetLength(0); i++)
             {
-                block.RotateRight();
+                counter = 0;
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (map[i,j]==2)
+                    {
+                        counter++;
+                    }
+                }
+                if (counter==10)
+                {
+                    for (int j = 1; j < map.GetLength(1)-1; j++)
+                    {
+                        map[i, j] = 0;
+                    }
+                }
             }
+            //opuszczanie reszty klocków
         }
     }
 }
