@@ -107,7 +107,7 @@ namespace Tetris
         public static Block GenerateBlock()
         {
             Random rand = new Random();
-            Block block = new Block("0");
+            Block block = new Block(rand.Next());
             return block;
         }
         public static void ClickEvent(Block block)
@@ -151,8 +151,11 @@ namespace Tetris
         {
             int counter;
             int target = 0;
-            bool check = true;
             bool clear = false;
+            int line1 = -1;
+            int line2 = -1;
+            int line3 = -1;
+            int line4 = -1;
             int clearedLineLocal = 0;
             for (int i = 0; i < map.GetLength(0); i++)
             {
@@ -170,10 +173,21 @@ namespace Tetris
                     {
                         map[i, j] = 0;
                     }
-                    if (check==true)
+                    if (line1 == -1)
                     {
-                        target = i;
-                        check = false;
+                        line1 = i;
+                    }
+                    else if (line2 == -1)
+                    {
+                        line2 = i;
+                    }
+                    else if (line3 == -1)
+                    {
+                        line3 = i;
+                    }
+                    else if (line4==-1)
+                    {
+                        line4 = i;
                     }
                     clearedLineLocal++;
                     clearedLineGlobal++;
@@ -183,33 +197,66 @@ namespace Tetris
             //opuszczanie reszty klocków
             if (clear)
             {
-                int[,] wholeArea = new int[target, map.GetLength(1)];
-                for (int i = 0; i < target; i++)
+                for (int num = 0; num < clearedLineLocal; num++)
                 {
-                    for (int j = 1; j < map.GetLength(1) - 1; j++)
+                    if (line1!=-1)
                     {
-                        wholeArea[i, j] = map[i, j];
-                        if (map[i,j]==2)
-                        {
-                            map[i, j] = 0;
-                        }
+                        ClearAbove(line1);
+                        line1 = -1;
                     }
-                }
-                for (int i = 0; i < clearedLineLocal; i++)
-                {
-                    for (int j = 0; j < target; j++)
+                    else if (line2!=-1)
                     {
-                        for (int k = 1; k < map.GetLength(1)-1; k++)
-                        {
-                            if (wholeArea[j,k]==2)
-                            {
-                                map[j+1, k] = 2;
-                            }
-                        }
+                        ClearAbove(line2);
+                        line2 = -1;
                     }
-                    
+                    else if (line3 != -1)
+                    {
+                        ClearAbove(line3);
+                        line3 = -1;
+                    }
+                    else if (line4 != -1)
+                    {
+                        ClearAbove(line4);
+                        line4 = -1;
+                    }
                 }
             }
+        }
+        public static void Assign(int[,]target ,int[,]main)
+        {
+            for (int i = 0; i < main.GetLength(0); i++)
+            {
+                for (int j = 0; j < main.GetLength(1); j++)
+                {
+                    target[i, j] = main[i, j];
+                }
+            }
+        }
+        public static void ClearAbove(int line)
+        {
+            int[,] wholeArea = new int[map.GetLength(0), map.GetLength(1)];
+            Assign(wholeArea, map);
+            for (int i = 0; i < line; i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (map[i,j]==2)
+                    {
+                        map[i, j] = 0;
+                    }
+                }
+            }
+            for (int i = 0; i < line; i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+                {
+                    if (wholeArea[i,j]==2)
+                    {
+                        map[i + 1, j] = 2;
+                    }
+                }
+            }
+
         }
     }
 }
