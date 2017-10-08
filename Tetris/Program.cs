@@ -14,11 +14,12 @@ namespace Tetris
         public static int[] generateLocation = { 0 , 4 };
         public static string square = "■";
         public static Stopwatch timeStart = new Stopwatch();
-        public static int timeToEnd = 100;
+        public static int timeToEnd = 200;
         public static int[,] map = new int[N, M];
         public static ConsoleKeyInfo key;
         public static bool keyPressed = false;
         public static bool action = false;
+        public static int clearedLineGlobal = 0;
         static void Main(string[] args)
         {
             PrepareMap();
@@ -149,6 +150,10 @@ namespace Tetris
         public static void ClearLine()
         {
             int counter;
+            int target = 0;
+            bool check = true;
+            bool clear = false;
+            int clearedLineLocal = 0;
             for (int i = 0; i < map.GetLength(0); i++)
             {
                 counter = 0;
@@ -165,9 +170,46 @@ namespace Tetris
                     {
                         map[i, j] = 0;
                     }
+                    if (check==true)
+                    {
+                        target = i;
+                        check = false;
+                    }
+                    clearedLineLocal++;
+                    clearedLineGlobal++;
+                    clear = true;
                 }
             }
             //opuszczanie reszty klocków
+            if (clear)
+            {
+                int[,] wholeArea = new int[target, map.GetLength(1)];
+                for (int i = 0; i < target; i++)
+                {
+                    for (int j = 1; j < map.GetLength(1) - 1; j++)
+                    {
+                        wholeArea[i, j] = map[i, j];
+                        if (map[i,j]==2)
+                        {
+                            map[i, j] = 0;
+                        }
+                    }
+                }
+                for (int i = 0; i < clearedLineLocal; i++)
+                {
+                    for (int j = 0; j < target; j++)
+                    {
+                        for (int k = 1; k < map.GetLength(1)-1; k++)
+                        {
+                            if (wholeArea[j,k]==2)
+                            {
+                                map[j+1, k] = 2;
+                            }
+                        }
+                    }
+                    
+                }
+            }
         }
     }
 }

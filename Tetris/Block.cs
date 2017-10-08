@@ -8,7 +8,7 @@ namespace Tetris
 {
     public class Block
     {
-        public static int[,] area=new int[4,4];
+        public static int[,] area;
         public static string info;
         public static int[] lastLocation = new int[2]; 
         public static bool droped = false;
@@ -46,6 +46,7 @@ namespace Tetris
         public Block(int seed)
         {
             Random rand = new Random(seed);
+            area = new int[4, 4];
             List<int[,]> shapeList = new List<int[,]>() { I_1, O_1, J_1, L_1, T_1, S_1, Z_1 };
             List<string> shapeInfo = new List<string>() { "I_1", "0_2", "J_1", "L_1", "T_1", "S_1", "Z_1" };
             int fate = rand.Next(0, 7);
@@ -56,6 +57,7 @@ namespace Tetris
         }
         public Block(string id)
         {
+            area = new int[4, 4];
             List<int[,]> shapeList = new List<int[,]>() { I_1, O_1, J_1, L_1, T_1, S_1, Z_1 };
             List<string> shapeInfo = new List<string>() { "I_1", "0_2", "J_1", "L_1", "T_1", "S_1", "Z_1" };
             SwitchArea(shapeList[Int32.Parse(id)]);
