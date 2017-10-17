@@ -8,41 +8,36 @@ namespace Tetris
 {
     public class Block
     {
-        public static int[,] area;
-        public static string info;
-        public static int[] lastLocation = new int[2]; 
-        public static bool droped = false;
-
-        //int[,] I = new int[4, 4] { { 1, 1, 1, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        //int[,] O = new int[4, 4] { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        //int[,] J = new int[4, 4] { { 1, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        //int[,] L = new int[4, 4] { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        //int[,] T = new int[4, 4] { { 0, 1, 0, 0 }, { 1, 1, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        //int[,] S = new int[4, 4] { { 0, 1, 1, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        //int[,] Z = new int[4, 4] { { 1, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-
+        public int[,] area { get; set; }
+        public string info { get; set; }
+        public int[] lastLocation { get; set; } = new int[2];
+        public bool droped { get; set; } = false;
         #region Shape
-        int[,] I_1 = new int[4, 4] { { 1, 1, 1, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] I_2 = new int[4, 4] { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 } };
-        int[,] O_1 = new int[4, 4] { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] L_1 = new int[4, 4] { { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 0, 0, 0 } };
-        int[,] L_2 = new int[4, 4] { { 0, 0, 0, 0 }, { 0, 1, 1, 1 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] L_3 = new int[4, 4] { { 0, 1, 1, 0 }, { 0, 0, 1, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 0 } };
-        int[,] L_4 = new int[4, 4] { { 0, 0, 0, 0 }, { 0, 0, 0, 1 }, { 0, 1, 1, 1 }, { 0, 0, 0, 0 } };
-        int[,] J_1 = new int[4, 4] { { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] J_2 = new int[4, 4] { { 0, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 1, 1, 0 }, { 0, 0, 0, 0 } };
-        int[,] J_3 = new int[4, 4] { { 1, 1, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] J_4 = new int[4, 4] { { 1, 1, 1, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] T_1 = new int[4, 4] { { 0, 1, 0, 0 }, { 1, 1, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] T_2 = new int[4, 4] { { 0, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] T_3 = new int[4, 4] { { 0, 0, 0, 0 }, { 1, 1, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] T_4 = new int[4, 4] { { 0, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] S_1 = new int[4, 4] { { 0, 1, 1, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] S_2 = new int[4, 4] { { 1, 0, 0, 0 }, { 1, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] Z_1 = new int[4, 4] { { 1, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
-        int[,] Z_2 = new int[4, 4] { { 0, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] I_1 = new int[4, 4] { { 1, 1, 1, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] I_2 = new int[4, 4] { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 } };
+        private int[,] O_1 = new int[4, 4] { { 1, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] L_1 = new int[4, 4] { { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 0, 0, 0 } };
+        private int[,] L_2 = new int[4, 4] { { 0, 0, 0, 0 }, { 0, 1, 1, 1 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] L_3 = new int[4, 4] { { 0, 1, 1, 0 }, { 0, 0, 1, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 0 } };
+        private int[,] L_4 = new int[4, 4] { { 0, 0, 0, 0 }, { 0, 0, 0, 1 }, { 0, 1, 1, 1 }, { 0, 0, 0, 0 } };
+        private int[,] J_1 = new int[4, 4] { { 0, 1, 0, 0 }, { 0, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] J_2 = new int[4, 4] { { 0, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 1, 1, 0 }, { 0, 0, 0, 0 } };
+        private int[,] J_3 = new int[4, 4] { { 1, 1, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] J_4 = new int[4, 4] { { 1, 1, 1, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] T_1 = new int[4, 4] { { 0, 1, 0, 0 }, { 1, 1, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] T_2 = new int[4, 4] { { 0, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] T_3 = new int[4, 4] { { 0, 0, 0, 0 }, { 1, 1, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] T_4 = new int[4, 4] { { 0, 1, 0, 0 }, { 1, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] S_1 = new int[4, 4] { { 0, 1, 1, 0 }, { 1, 1, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] S_2 = new int[4, 4] { { 1, 0, 0, 0 }, { 1, 1, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] Z_1 = new int[4, 4] { { 1, 1, 0, 0 }, { 0, 1, 1, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
+        private int[,] Z_2 = new int[4, 4] { { 0, 1, 0, 0 }, { 1, 1, 0, 0 }, { 1, 0, 0, 0 }, { 0, 0, 0, 0 } };
         #endregion
 
+        public Block()
+        {
+            area = new int[4, 4];
+        }
         public Block(int seed)
         {
             Random rand = new Random(seed);
@@ -52,7 +47,7 @@ namespace Tetris
             int fate = rand.Next(0, 7);
             SwitchArea(shapeList[fate]);
             info = shapeInfo[fate];
-            Prepare();
+            //Prepare();
             
         }
         public Block(string id)
@@ -62,9 +57,9 @@ namespace Tetris
             List<string> shapeInfo = new List<string>() { "I_1", "0_2", "J_1", "L_1", "T_1", "S_1", "Z_1" };
             SwitchArea(shapeList[Int32.Parse(id)]);
             info = shapeInfo[Int32.Parse(id)];
-            Prepare();
+            //Prepare();
         }
-        public static void Prepare()
+        public void Prepare()
         {
             //umiescic na mapie klocek
             int locationX = Program.generateLocation[1];
@@ -88,16 +83,7 @@ namespace Tetris
         }
         public void Drop()
         {
-            for (int i = lastLocation[0]; i < area.GetLength(0)+lastLocation[0]; i++)
-            {
-                for (int j = lastLocation[1]; j < area.GetLength(1)+lastLocation[1]; j++)
-                {
-                    if (area[i-lastLocation[0],j-lastLocation[1]]==1)
-                    {
-                        Program.map[i, j] = 0;
-                    }
-                }
-            }
+            Clear();
             lastLocation[0] += 1;
             for (int i = lastLocation[0]; i < area.GetLength(0) + lastLocation[0]; i++)
             {
@@ -394,6 +380,18 @@ namespace Tetris
                 }
             }
         }
-
+        public void Clear()
+        {
+            for (int i = lastLocation[0]; i < area.GetLength(0) + lastLocation[0]; i++)
+            {
+                for (int j = lastLocation[1]; j < area.GetLength(1) + lastLocation[1]; j++)
+                {
+                    if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
+                    {
+                        Program.map[i, j] = 0;
+                    }
+                }
+            }
+        }
     }
 }       

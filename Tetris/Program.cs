@@ -19,7 +19,12 @@ namespace Tetris
         public static ConsoleKeyInfo key;
         public static bool keyPressed = false;
         public static bool action = false;
-        public static int clearedLineGlobal = 0;
+        public static Block FirstBlock = new Block();
+        public static Block NextBlock = new Block();
+        public static Block ShiftBlock = new Block();
+        public static int numberOfLineClear = 0;
+        public static int lvl = 1;
+        public static int ShiftCounter = 0;
         static void Main(string[] args)
         {
             PrepareMap();
@@ -44,38 +49,47 @@ namespace Tetris
                 }
                 Console.WriteLine();
             }
+            //Console.SetWindowSize(50, 30);
         }
         public static void StartGame()
         {
+            FirstBlock = GenerateBlock();
+            FirstBlock.Prepare();
+            NextBlock = GenerateBlock();
             UpdateMap();
-            Block block = GenerateBlock();
+            
             while (true)
             {
                 timeStart.Start();
                 if ((int)timeStart.ElapsedMilliseconds>timeToEnd)//co 0,5 sek generuje nowy klocek
                 {
-                    if (!block.IsSomethingUnder())
+                    if (!FirstBlock.IsSomethingUnder())
                     {
                         Thread.Sleep(timeToEnd);
-                        block.Drop();
+                        FirstBlock.Drop();
                         action = true;
                         timeStart.Reset();
                         //
                     }
                     else
                     {
+                        ShiftCounter = 0;
                         ClearLine();
-                        block = GenerateBlock();
+                        AssignBlock(FirstBlock, NextBlock);
+                        FirstBlock.Prepare();
+                        NextBlock = GenerateBlock();
+                        action = true;
+                        //FirstBlock = GenerateBlock();
+                        //FirstBlock.Prepare();
                     }
                 }
-                ClickEvent(block);
+                ClickEvent(FirstBlock);
                 if (action)
                 {
                     UpdateMap();
                     action = false;
                 }
             }
-
         }
         public static void UpdateMap()
         {
@@ -103,6 +117,9 @@ namespace Tetris
                 }
                 Console.WriteLine();
             }
+            ShowNextBlock();
+            ShowShiftBlock();
+            ShowInfo();
         }
         public static Block GenerateBlock()
         {
@@ -146,11 +163,19 @@ namespace Tetris
             {
                 block.RotateRight();
             }
+            if (key.Key == ConsoleKey.Z && keyPressed)
+            {
+                if (ShiftCounter==0)
+                {
+                    HideBlock();
+                    FirstBlock.Prepare();
+                    ShiftCounter++;
+                }
+            }
         }
         public static void ClearLine()
         {
             int counter;
-            int target = 0;
             bool clear = false;
             int line1 = -1;
             int line2 = -1;
@@ -190,8 +215,13 @@ namespace Tetris
                         line4 = i;
                     }
                     clearedLineLocal++;
-                    clearedLineGlobal++;
+                    numberOfLineClear++;
                     clear = true;
+                    if (numberOfLineClear%10==0)
+                    {
+                        lvl++;
+                        timeToEnd -= 50;
+                    }
                 }
             }
             //opuszczanie reszty klocków
@@ -257,6 +287,91 @@ namespace Tetris
                 }
             }
 
+        }
+        public static void AssignBlock(Block target,Block main)
+        {
+            for (int i = 0; i < main.area.GetLength(0); i++)
+            {
+                for (int j = 0; j < main.area.GetLength(1); j++)
+                {
+                    target.area[i, j] = main.area[i, j];
+                }
+            }
+            target.info = main.info;
+        }
+        public static void ShowNextBlock()
+        {
+            Console.SetCursorPosition(32, 1);
+            Console.Write("Next Block");
+            Console.SetCursorPosition(34, 3);
+            for (int i = 0; i < NextBlock.area.GetLength(0); i++)
+            {
+                for (int j = 0; j < NextBlock.area.GetLength(1); j++)
+                {
+                    if (NextBlock.area[i,j]==1)
+                    {
+                        Console.Write(square+" ");
+                    }
+                    else
+                    {
+                        Console.SetCursorPosition(Console.CursorLeft+2,Console.CursorTop);
+                    }
+                }
+                Console.SetCursorPosition(34, Console.CursorTop+1);
+            }
+        }
+        public static void ShowShiftBlock()
+        {
+            if (ShiftBlock.info!=null)
+            {
+                Console.SetCursorPosition(32, 6);
+                Console.Write("Shift Block");
+                Console.SetCursorPosition(34, 8);
+                for (int i = 0; i < NextBlock.area.GetLength(0); i++)
+                {
+                    for (int j = 0; j < NextBlock.area.GetLength(1); j++)
+                    {
+                        if (ShiftBlock.area[i, j] == 1)
+                        {
+                            Console.Write(square + " ");
+                        }
+                        else
+                        {
+                            Console.SetCursorPosition(Console.CursorLeft + 2, Console.CursorTop);
+                        }
+                    }
+                    Console.SetCursorPosition(34, Console.CursorTop + 1);
+                }
+            }
+            else
+            {
+                Console.Write("BRAK");
+            }
+        }
+        public static void ShowInfo()
+        {
+            Console.SetCursorPosition(45, 1);
+            Console.Write("Next Block");
+            Console.SetCursorPosition(45, 3);
+            Console.Write("Clear Line : "+numberOfLineClear);
+            Console.SetCursorPosition(45, 4);
+            Console.Write("Lvl : " + lvl);
+        }
+        public static void HideBlock()
+        {
+            if (ShiftBlock.info != null)
+            {
+                FirstBlock.Clear();
+                Block temp = new Block();
+                AssignBlock(temp, FirstBlock);
+                AssignBlock(FirstBlock, ShiftBlock);
+                AssignBlock(ShiftBlock, temp);
+            }
+            else
+            {
+                FirstBlock.Clear();
+                AssignBlock(ShiftBlock,FirstBlock);
+            }
         }
     }
 }
