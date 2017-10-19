@@ -43,21 +43,19 @@ namespace Tetris
             Random rand = new Random(seed);
             area = new int[4, 4];
             List<int[,]> shapeList = new List<int[,]>() { I_1, O_1, J_1, L_1, T_1, S_1, Z_1 };
-            List<string> shapeInfo = new List<string>() { "I_1", "0_2", "J_1", "L_1", "T_1", "S_1", "Z_1" };
+            List<string> shapeInfo = new List<string>() { "I_1", "O_1", "J_1", "L_1", "T_1", "S_1", "Z_1" };
             int fate = rand.Next(0, 7);
             SwitchArea(shapeList[fate]);
             info = shapeInfo[fate];
-            //Prepare();
             
         }
         public Block(string id)
         {
             area = new int[4, 4];
             List<int[,]> shapeList = new List<int[,]>() { I_1, O_1, J_1, L_1, T_1, S_1, Z_1 };
-            List<string> shapeInfo = new List<string>() { "I_1", "0_2", "J_1", "L_1", "T_1", "S_1", "Z_1" };
+            List<string> shapeInfo = new List<string>() { "I_1", "O_1", "J_1", "L_1", "T_1", "S_1", "Z_1" };
             SwitchArea(shapeList[Int32.Parse(id)]);
             info = shapeInfo[Int32.Parse(id)];
-            //Prepare();
         }
         public void Prepare()
         {
@@ -204,7 +202,7 @@ namespace Tetris
                 {
                     if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
                     {
-                        if (Program.map[i , j+1] == -1 || Program.map[i , j+1] == 2 )
+                        /**/if (Program.map[i , j+1] == -1 || Program.map[i , j+1] == 2 )
                         {
                             return true;
                         }
@@ -230,145 +228,166 @@ namespace Tetris
             }
             return false;
         }
-        public void RotateRight()
+        public void Rotate(int[,] featureBlock, string featureInfo)
         {
-            for (int i = lastLocation[0]; i < area.GetLength(0) + lastLocation[0]; i++)
+            Clear();
+            SwitchArea(featureBlock);
+            info = featureInfo;
+            Draw();
+        }
+        public void CalculateDiv()
+        {
+            int div = 0;
+            div = lastLocation[1] + CheckLength(I_1) - Program.M;
+            if (div >= 0)
             {
-                for (int j = lastLocation[1]; j < area.GetLength(1) + lastLocation[1]; j++)
-                {
-                    if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
-                    {
-                        Program.map[i, j] = 0;
-                    }
-                }
+                Clear();
+                lastLocation[1] -= (div + 1);
             }
+        }
+        public void LengthAfterRotate()
+        {
+            int[,] featureArea = new int[4, 4];
+            string featureInfo = "";
             switch (info)
             {
                 case "I_1":
                     {
-                        SwitchArea(I_2);
-                        info = "I_2";
+                        featureArea = I_2;
+                        featureInfo = "I_2";
+                        CalculateDiv();
                         break;
                     }
                 case "I_2":
                     {
-                        SwitchArea(I_1);
-                        info = "I_1";
+                        featureArea = I_1;
+                        featureInfo = "I_1";
+                        CalculateDiv();
                         break;
                     }
                 case "O_1":
                     {
+                        featureArea = O_1;
+                        featureInfo = "O_1";
+                        CalculateDiv();
                         break;
                     }
                 case "J_1":
                     {
-                        SwitchArea(J_2);
-                        info = "J_2";
+                        featureArea = J_2;
+                        featureInfo = "J_2";
+                        CalculateDiv();
                         break;
                     }
                 case "J_2":
                     {
-                        SwitchArea(J_3);
-                        info = "J_3";
+                        featureArea = J_3;
+                        featureInfo = "J_3";
+                        CalculateDiv();
                         break;
                     }
                 case "J_3":
                     {
-                        SwitchArea(J_4);
-                        info = "J_4";
+                        featureArea = J_4;
+                        featureInfo = "J_4";
+                        CalculateDiv();
                         break;
                     }
                 case "J_4":
                     {
-                        SwitchArea(J_1);
-                        info = "J_1";
+                        featureArea = J_1;
+                        featureInfo = "J_1";
+                        CalculateDiv();
                         break;
                     }
                 case "L_1":
                     {
-                        SwitchArea(L_2);
-                        info = "L_2";
+                        featureArea = L_2;
+                        featureInfo = "L_2";
+                        CalculateDiv();
                         break;
                     }
                 case "L_2":
                     {
-                        SwitchArea(L_3);
-                        info = "L_3";
+                        featureArea = L_3;
+                        featureInfo = "L_3";
+                        CalculateDiv();
                         break;
                     }
                 case "L_3":
                     {
-                        SwitchArea(L_4);
-                        info = "L_4";
+                        featureArea = L_4;
+                        featureInfo = "L_4";
+                        CalculateDiv();
                         break;
                     }
                 case "L_4":
                     {
-                        SwitchArea(L_1);
-                        info = "L_1";
+                        featureArea = L_1;
+                        featureInfo = "L_1";
+                        CalculateDiv();
                         break;
                     }
                 case "T_1":
                     {
-                        SwitchArea(T_2);
-                        info = "T_2";
+                        featureArea = T_2;
+                        featureInfo = "T_2";
+                        CalculateDiv();
                         break;
                     }
                 case "T_2":
                     {
-                        SwitchArea(T_3);
-                        info = "T_3";
+                        featureArea = T_3;
+                        featureInfo = "T_3";
+                        CalculateDiv();
                         break;
                     }
                 case "T_3":
                     {
-                        SwitchArea(T_4);
-                        info = "T_4";
+                        featureArea = T_4;
+                        featureInfo = "T_4";
+                        CalculateDiv();
                         break;
                     }
                 case "T_4":
                     {
-                        SwitchArea(T_1);
-                        info = "T_1";
+                        featureArea = T_1;
+                        featureInfo = "T_1";
+                        CalculateDiv();
                         break;
                     }
                 case "S_1":
                     {
-                        SwitchArea(S_2);
-                        info = "S_2";
+                        featureArea = S_2;
+                        featureInfo = "S_2";
+                        CalculateDiv();
                         break;
                     }
                 case "S_2":
                     {
-                        SwitchArea(S_1);
-                        info = "S_1";
+                        featureArea = S_1;
+                        featureInfo = "S_1";
+                        CalculateDiv();
                         break;
                     }
                 case "Z_1":
                     {
-                        SwitchArea(Z_2);
-                        info = "Z_2";
+                        featureArea = Z_2;
+                        featureInfo = "Z_2";
+                        CalculateDiv();
                         break;
                     }
                 case "Z_2":
                     {
-                        SwitchArea(Z_1);
-                        info = "Z_1";
+                        featureArea = Z_1;
+                        featureInfo = "Z_1";
+                        CalculateDiv();
                         break;
                     }
                 default:
                     break;
             }
-            for (int i = lastLocation[0]; i < area.GetLength(0) + lastLocation[0]; i++)
-            {
-                for (int j = lastLocation[1]; j < area.GetLength(1) + lastLocation[1]; j++)
-                {
-                    if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
-                    {
-                        Program.map[i, j] = 1;
-                    }
-                }
-            }
+            Rotate(featureArea, featureInfo);
         }
         public void SwitchArea(int[,] featureShape)
         {
@@ -392,6 +411,40 @@ namespace Tetris
                     }
                 }
             }
+        }
+        public void Draw()
+        {
+            for (int i = lastLocation[0]; i < area.GetLength(0) + lastLocation[0]; i++)
+            {
+                for (int j = lastLocation[1]; j < area.GetLength(1) + lastLocation[1]; j++)
+                {
+                    if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
+                    {
+                        Program.map[i, j] = 1;
+                    }
+                }
+            }
+        }
+        public int CheckLength(int[,] shape)
+        {
+            int counter = 0;
+            int counterMax = 0;
+            for (int i = 0; i < shape.GetLength(0); i++)
+            {
+                for (int j = 0; j < shape.GetLength(1); j++)
+                {
+                    if (shape[i, j] == 1)
+                    {
+                        counter++;
+                    }
+                }
+                if (counter > counterMax)
+                {
+                    counterMax = counter;
+                }
+                counter = 0;
+            }
+            return counterMax;
         }
     }
 }       

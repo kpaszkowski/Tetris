@@ -10,8 +10,8 @@ namespace Tetris
 {
     class Program
     {
-        public static int N=25, M=12;
-        public static int[] generateLocation = { 0 , 4 };
+        public static int N = 25, M = 12;
+        public static int[] generateLocation = { 0, 4 };
         public static string square = "■";
         public static Stopwatch timeStart = new Stopwatch();
         public static int timeToEnd = 200;
@@ -23,12 +23,17 @@ namespace Tetris
         public static Block NextBlock = new Block();
         public static Block ShiftBlock = new Block();
         public static int numberOfLineClear = 0;
+        public static int numberOfLineClearInOneRow = 0;
         public static int lvl = 1;
+        public static int point = 0;
+        public static bool isCombo = false;
+        public static int comboLvl = 0;
         public static int ShiftCounter = 0;
         static void Main(string[] args)
         {
             PrepareMap();
             StartGame();
+            GameOver();
             Console.ReadLine();
         }
         public static void PrepareMap()
@@ -40,11 +45,6 @@ namespace Tetris
                     if (i==N-1 || j==0 || j==M-1)
                     {
                         map[i, j] = -1;
-                        //Console.Write("* ");
-                    }
-                    else
-                    {
-                        //Console.Write("  ");
                     }
                 }
                 Console.WriteLine();
@@ -69,18 +69,32 @@ namespace Tetris
                         FirstBlock.Drop();
                         action = true;
                         timeStart.Reset();
-                        //
                     }
                     else
                     {
+                        if (map[generateLocation[0], generateLocation[1]] == 2)
+                        {
+                            //Game Over
+                            return;
+                        }
+                        isCombo = false;
                         ShiftCounter = 0;
-                        ClearLine();
+                        numberOfLineClearInOneRow = ClearLine();
                         AssignBlock(FirstBlock, NextBlock);
                         FirstBlock.Prepare();
                         NextBlock = GenerateBlock();
+
                         action = true;
                         //FirstBlock = GenerateBlock();
                         //FirstBlock.Prepare();
+                        if (isCombo)
+                        {
+                            comboLvl++;
+                        }
+                        if (!isCombo)
+                        {
+                            comboLvl = 0;
+                        }
                     }
                 }
                 ClickEvent(FirstBlock);
@@ -89,7 +103,20 @@ namespace Tetris
                     UpdateMap();
                     action = false;
                 }
+                if (comboLvl != 0)
+                {
+                    point += numberOfLineClearInOneRow * 100 * comboLvl;
+                }
+                else
+                {
+                    point += numberOfLineClearInOneRow * 100;
+                }
+                numberOfLineClearInOneRow = 0;
             }
+        }
+        public static void GameOver()
+        {
+
         }
         public static void UpdateMap()
         {
@@ -161,7 +188,7 @@ namespace Tetris
             }
             if (key.Key == ConsoleKey.UpArrow && keyPressed && !block.IsSomethingUnder())
             {
-                block.RotateRight();
+                block.LengthAfterRotate();
             }
             if (key.Key == ConsoleKey.Z && keyPressed)
             {
@@ -173,7 +200,7 @@ namespace Tetris
                 }
             }
         }
-        public static void ClearLine()
+        public static int ClearLine()
         {
             int counter;
             bool clear = false;
@@ -250,7 +277,9 @@ namespace Tetris
                         line4 = -1;
                     }
                 }
+                isCombo = true;
             }
+            return clearedLineLocal;
         }
         public static void Assign(int[,]target ,int[,]main)
         {
@@ -351,11 +380,13 @@ namespace Tetris
         public static void ShowInfo()
         {
             Console.SetCursorPosition(45, 1);
-            Console.Write("Next Block");
+            Console.Write("Clear Line : " + numberOfLineClear);
             Console.SetCursorPosition(45, 3);
-            Console.Write("Clear Line : "+numberOfLineClear);
-            Console.SetCursorPosition(45, 4);
             Console.Write("Lvl : " + lvl);
+            Console.SetCursorPosition(45, 5);
+            Console.Write("Points : " + point);
+            Console.SetCursorPosition(45, 7);
+            Console.Write("Combo : " + comboLvl);
         }
         public static void HideBlock()
         {
@@ -370,7 +401,9 @@ namespace Tetris
             else
             {
                 FirstBlock.Clear();
-                AssignBlock(ShiftBlock,FirstBlock);
+                AssignBlock(ShiftBlock, FirstBlock);
+                AssignBlock(FirstBlock, NextBlock);
+                NextBlock = GenerateBlock();
             }
         }
     }
