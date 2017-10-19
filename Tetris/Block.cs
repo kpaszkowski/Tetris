@@ -1,4 +1,5 @@
-﻿using System;
+﻿//dorobić obracanie w przypadku gdy obok są inne
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -237,12 +238,17 @@ namespace Tetris
         }
         public void CalculateDiv()
         {
-            int div = 0;
-            div = lastLocation[1] + CheckLength(I_1) - Program.M;
-            if (div >= 0)
+            int divR = 0;
+            divR = lastLocation[1] + CheckLength(I_1) - Program.M;
+            if (divR >= 0)
             {
                 Clear();
-                lastLocation[1] -= (div + 1);
+                lastLocation[1] -= (divR + 1);
+            }
+            if (lastLocation[1]==0)
+            {
+                Clear();
+                lastLocation[1]++;
             }
         }
         public void LengthAfterRotate()
