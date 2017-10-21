@@ -13,6 +13,8 @@ namespace Tetris
         public string info { get; set; }
         public int[] lastLocation { get; set; } = new int[2];
         public bool droped { get; set; } = false;
+        public int blockType { get; set; } = -2;
+
         #region Shape
         private int[,] I_1 = new int[4, 4] { { 1, 1, 1, 1 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 } };
         private int[,] I_2 = new int[4, 4] { { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 }, { 1, 0, 0, 0 } };
@@ -60,6 +62,7 @@ namespace Tetris
         }
         public void Prepare()
         {
+            SetBlockType();
             //umiescic na mapie klocek
             int locationX = Program.generateLocation[1];
             int locationY = Program.generateLocation[0];
@@ -69,9 +72,10 @@ namespace Tetris
             {
                 for (int j = 0; j < area.GetLength(1); j++)
                 {
-                    if (area[i,j]==1)
+                    if (area[i,j]==blockType)
                     {
                         Program.map[locationY, locationX] = 1;
+                        Program.mapToDraw[locationY, locationX] = blockType;
                     }
                     locationX += 1;
                 }
@@ -92,6 +96,7 @@ namespace Tetris
                     {
                         //Program.map[i, j] = 0;
                         Program.map[i , j] = 1;
+                        Program.mapToDraw[i,j] = blockType;
                     }
                 }
             }
@@ -106,6 +111,7 @@ namespace Tetris
                     if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
                     {
                         Program.map[i, j] = 0;
+                        Program.mapToDraw[i, j] = 0;
                         //Program.map[i + 1, j] = 1;
                     }
                 }
@@ -119,6 +125,7 @@ namespace Tetris
                     {
                         //Program.map[i, j] = 0;
                         Program.map[i, j] = 1;
+                        Program.mapToDraw[i, j] = blockType;
                     }
                 }
             }
@@ -133,6 +140,7 @@ namespace Tetris
                     {
                         Program.map[i, j] = 0;
                         //Program.map[i + 1, j] = 1;
+                        Program.mapToDraw[i, j] = 0;
                     }
                 }
             }
@@ -145,6 +153,7 @@ namespace Tetris
                     {
                         //Program.map[i, j] = 0;
                         Program.map[i, j] = 1;
+                        Program.mapToDraw[i, j] = blockType;
                     }
                 }
             }
@@ -185,6 +194,7 @@ namespace Tetris
                                     {
                                         //Program.map[i, j] = 0;
                                         Program.map[x, y] = 2;
+                                        Program.mapToDraw[i, j] = blockType;
                                     }
                                 }
                             }
@@ -414,6 +424,7 @@ namespace Tetris
                     if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
                     {
                         Program.map[i, j] = 0;
+                        Program.mapToDraw[i, j] = 0;
                     }
                 }
             }
@@ -427,6 +438,7 @@ namespace Tetris
                     if (area[i - lastLocation[0], j - lastLocation[1]] == 1)
                     {
                         Program.map[i, j] = 1;
+                        Program.mapToDraw[i, j] = blockType;
                     }
                 }
             }
@@ -451,6 +463,133 @@ namespace Tetris
                 counter = 0;
             }
             return counterMax;
+        }
+        public void SetBlockType()
+        {
+            switch (info)
+            {
+                case "I_1":
+                    {
+                        blockType = 2;
+                        break;
+                    }
+                case "I_2":
+                    {
+                        blockType = 2;
+                        break;
+                    }
+                case "O_1":
+                    {
+                        blockType = 3;
+                        break;
+                    }
+                case "J_1":
+                    {
+                        blockType = 4;
+                        break;
+                    }
+                case "J_2":
+                    {
+                        blockType = 4;
+                        break;
+                    }
+                case "J_3":
+                    {
+                        blockType = 4;
+                        break;
+                    }
+                case "J_4":
+                    {
+                        blockType = 4;
+                        break;
+                    }
+                case "L_1":
+                    {
+                        blockType = 5;
+                        break;
+                    }
+                case "L_2":
+                    {
+                        blockType = 5;
+                        break;
+                    }
+                case "L_3":
+                    {
+                        blockType = 5;
+                        break;
+                    }
+                case "L_4":
+                    {
+                        blockType = 5;
+                        break;
+                    }
+                case "T_1":
+                    {
+                        blockType = 6;
+                        break;
+                    }
+                case "T_2":
+                    {
+                        blockType = 6;
+                        break;
+                    }
+                case "T_3":
+                    {
+                        blockType = 6;
+                        break;
+                    }
+                case "T_4":
+                    {
+                        blockType = 6;
+                        break;
+                    }
+                case "S_1":
+                    {
+                        blockType = 7;
+                        break;
+                    }
+                case "S_2":
+                    {
+                        blockType = 7;
+                        break;
+                    }
+                case "Z_1":
+                    {
+                        blockType = 8;
+                        break;
+                    }
+                case "Z_2":
+                    {
+                        blockType = 8;
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+        public ConsoleColor GetColor()
+        {
+            switch (blockType)
+            {
+                case 1:
+                    return ConsoleColor.White;
+                case 2:
+                    return ConsoleColor.Blue;
+                case 3:
+                    return ConsoleColor.DarkGray;
+                case 4:
+                    return ConsoleColor.Green;
+                case 5:
+                    return ConsoleColor.Yellow;
+                case 6:
+                    return ConsoleColor.Red;
+                case 7:
+                    return ConsoleColor.Magenta;
+                case 8:
+                    return ConsoleColor.Cyan;
+                default:
+                    return ConsoleColor.Black;
+            }
         }
     }
 }       

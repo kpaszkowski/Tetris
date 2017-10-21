@@ -5,17 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Threading;
+using System.Drawing;
 
 namespace Tetris
 {
     class Program
     {
+        #region Global Variables
         public static int N = 25, M = 12;
         public static int[] generateLocation = { 0, 4 };
         public static string square = "■";
         public static Stopwatch timeStart = new Stopwatch();
         public static int timeToEnd = 200;
         public static int[,] map = new int[N, M];
+        public static int[,] mapToDraw = new int[N, M];
         public static ConsoleKeyInfo key;
         public static bool keyPressed = false;
         public static bool action = false;
@@ -29,6 +32,8 @@ namespace Tetris
         public static bool isCombo = false;
         public static int comboLvl = 0;
         public static int ShiftCounter = 0;
+        #endregion
+
         static void Main(string[] args)
         {
             PrepareMap();
@@ -36,6 +41,8 @@ namespace Tetris
             GameOver();
             Console.ReadLine();
         }
+
+        #region Static Methods
         public static void PrepareMap()
         {
             for (int i = 0; i < map.GetLength(0); i++)
@@ -45,6 +52,7 @@ namespace Tetris
                     if (i==N-1 || j==0 || j==M-1)
                     {
                         map[i, j] = -1;
+                        mapToDraw[i, j] = -1;
                     }
                 }
                 Console.WriteLine();
@@ -56,6 +64,7 @@ namespace Tetris
             FirstBlock = GenerateBlock();
             FirstBlock.Prepare();
             NextBlock = GenerateBlock();
+            NextBlock.SetBlockType();
             UpdateMap();
             
             while (true)
@@ -83,6 +92,7 @@ namespace Tetris
                         AssignBlock(FirstBlock, NextBlock);
                         FirstBlock.Prepare();
                         NextBlock = GenerateBlock();
+                        NextBlock.SetBlockType();
 
                         action = true;
                         //FirstBlock = GenerateBlock();
@@ -125,17 +135,55 @@ namespace Tetris
             {
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    if (map[i,j]==-1)
+                    if (mapToDraw[i,j]==-1)
                     {
                         Console.Write("* ");
                     }
-                    else if (map[i,j]==1)
+                    else if (mapToDraw[i,j]==1)
                     {
                         Console.Write(square+" ");
                     }
-                    else if (map[i,j]==2)
+                    else if (mapToDraw[i,j]==2)
                     {
+                        Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write(square+" ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (mapToDraw[i, j] == 3)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.Write(square + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (mapToDraw[i, j] == 4)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(square + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (mapToDraw[i, j] == 5)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write(square + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (mapToDraw[i, j] == 6)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write(square + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (mapToDraw[i, j] == 7)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        Console.Write(square + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (mapToDraw[i, j] == 8)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write(square + " ");
+                        Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
@@ -224,6 +272,7 @@ namespace Tetris
                     for (int j = 1; j < map.GetLength(1)-1; j++)
                     {
                         map[i, j] = 0;
+                        mapToDraw[i, j] = 0;
                     }
                     if (line1 == -1)
                     {
@@ -291,10 +340,16 @@ namespace Tetris
                 }
             }
         }
+        /// <summary>
+        /// tu jest problem z zapamietywaniem tablicy do wyswietlenia
+        /// </summary>
+        /// <param name="line"></param>
         public static void ClearAbove(int line)
         {
             int[,] wholeArea = new int[map.GetLength(0), map.GetLength(1)];
+            int[,] wholeAreaToDraw = new int[map.GetLength(0), map.GetLength(1)];
             Assign(wholeArea, map);
+            Assign(wholeAreaToDraw, mapToDraw);
             for (int i = 0; i < line; i++)
             {
                 for (int j = 0; j < map.GetLength(1); j++)
@@ -302,6 +357,10 @@ namespace Tetris
                     if (map[i,j]==2)
                     {
                         map[i, j] = 0;
+                    }
+                    if (mapToDraw[i,j]!=-1)
+                    {
+                        mapToDraw[i, j] = 0;
                     }
                 }
             }
@@ -312,6 +371,12 @@ namespace Tetris
                     if (wholeArea[i,j]==2)
                     {
                         map[i + 1, j] = 2;
+                        
+                        //ustawic odpowiedni blok
+                    }
+                    if (wholeAreaToDraw[i,j]==1 || wholeAreaToDraw[i, j] == 2 || wholeAreaToDraw[i, j] == 3 || wholeAreaToDraw[i, j] == 4 || wholeAreaToDraw[i, j] == 5 || wholeAreaToDraw[i, j] == 6 || wholeAreaToDraw[i, j] == 7 || wholeAreaToDraw[i, j] == 8)
+                    {
+                        mapToDraw[i + 1, j] = wholeAreaToDraw[i,j];
                     }
                 }
             }
@@ -333,13 +398,16 @@ namespace Tetris
             Console.SetCursorPosition(32, 1);
             Console.Write("Next Block");
             Console.SetCursorPosition(34, 3);
+            ConsoleColor color = NextBlock.GetColor();
             for (int i = 0; i < NextBlock.area.GetLength(0); i++)
             {
                 for (int j = 0; j < NextBlock.area.GetLength(1); j++)
                 {
                     if (NextBlock.area[i,j]==1)
                     {
+                        Console.ForegroundColor = color;
                         Console.Write(square+" ");
+                        Console.ForegroundColor = ConsoleColor.White;
                     }
                     else
                     {
@@ -353,6 +421,7 @@ namespace Tetris
         {
             if (ShiftBlock.info!=null)
             {
+                ConsoleColor color = ShiftBlock.GetColor();
                 Console.SetCursorPosition(32, 6);
                 Console.Write("Shift Block");
                 Console.SetCursorPosition(34, 8);
@@ -362,7 +431,9 @@ namespace Tetris
                     {
                         if (ShiftBlock.area[i, j] == 1)
                         {
+                            Console.ForegroundColor = color;
                             Console.Write(square + " ");
+                            Console.ForegroundColor = ConsoleColor.White;
                         }
                         else
                         {
@@ -397,6 +468,8 @@ namespace Tetris
                 AssignBlock(temp, FirstBlock);
                 AssignBlock(FirstBlock, ShiftBlock);
                 AssignBlock(ShiftBlock, temp);
+                ShiftBlock.SetBlockType();
+                NextBlock.SetBlockType();
             }
             else
             {
@@ -404,7 +477,10 @@ namespace Tetris
                 AssignBlock(ShiftBlock, FirstBlock);
                 AssignBlock(FirstBlock, NextBlock);
                 NextBlock = GenerateBlock();
+                ShiftBlock.SetBlockType();
+                NextBlock.SetBlockType();
             }
         }
+        #endregion
     }
 }
